@@ -86,7 +86,7 @@ int write_pixel(Pixel *pixel, int width, int height) {
   // vertically reflected for aestatic purposes, so no need to start from bottom row for BMP
   for (int i = 0; i < height; i++) {
     for (int j = 0; j < width; j++) {
-      Pixel current = pixel[i * j + j];
+      Pixel current = pixel[i * width + j];
       unsigned char pixel_string[3] = {current.b, current.g, current.r};
       fwrite(pixel_string, 1, 3, file); 
     }
@@ -114,8 +114,10 @@ void burning_ship(float complex start, size_t width, size_t height, float res, u
       float iteration = 0; // number of iteration for current pixel
 
       while ((zx * zx + zy * zy < 4) && (iteration < n)) {   // check if Zn diverges 
-        float xtemp = (zx * zx) - (zy * zy) + cx;
-        zy = fabsf(2 * zx * zy) + cy;
+        float ax = fabsf(zx);
+        float ay = fabsf(zy);
+        float xtemp = (ax * ax) - (ay * ay) + cx;
+        zy = (2 * ax * ay) + cy;
         zx = xtemp;
         iteration++;
       }
@@ -147,10 +149,10 @@ void burning_ship(float complex start, size_t width, size_t height, float res, u
 
 int main(int argc, char *argv[])
 {
-  size_t width = 800;
-  size_t height = 600;
-  float complex start = -2.0 + 0.0 * I;
-  float res = 0.005;
+  size_t width = 1600;
+  size_t height = 1000;
+  float complex start = -1.8 + 0.0 * I;
+  float res = 0.0001;
   unsigned n = 1000;
 
   unsigned char *img = malloc(width * height * 3);
