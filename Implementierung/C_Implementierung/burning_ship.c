@@ -42,7 +42,7 @@ typedef struct{
 
 #pragma pack(pop)
 
-int write_pixel(Pixel *pixel, int width, int height) {
+int write_pixel(Pixel *pixel, size_t width, size_t height) {
   FILE *file;
   file = fopen("burning_ship_fractal.bmp", "wb");
 
@@ -84,6 +84,7 @@ int write_pixel(Pixel *pixel, int width, int height) {
   fwrite(&info_header, sizeof(info_header), 1, file);
  
   // vertically reflected for aestatic purposes, so no need to start from bottom row for BMP
+  // so start is at bottom left
   for (int i = 0; i < height; i++) {
     for (int j = 0; j < width; j++) {
       Pixel current = pixel[i * width + j];
@@ -100,6 +101,9 @@ int write_pixel(Pixel *pixel, int width, int height) {
   return EXIT_SUCCESS;
 }
 
+// width, height: number of pixels 
+// res: size of each pixel
+// smaller res => zoom in
 void burning_ship(float complex start, size_t width, size_t height, float res, unsigned n, unsigned char* img) {
   float cx = crealf(start); // get real part of start
   float cy = cimagf(start); // get imaginary part of start
@@ -111,7 +115,7 @@ void burning_ship(float complex start, size_t width, size_t height, float res, u
     for (int j = 0; j < width; j++) {
       float zx = 0; // initialize real part of Z0
       float zy = 0; // initialize imaginarty part of Z0
-      float iteration = 0; // number of iteration for current pixel
+      int iteration = 0; // number of iteration for current pixel
 
       while ((zx * zx + zy * zy < 4) && (iteration < n)) {   // check if Zn diverges 
         float ax = fabsf(zx);
@@ -129,14 +133,11 @@ void burning_ship(float complex start, size_t width, size_t height, float res, u
         num_of_pixel++;
       }
       else {  // if Z diverges, set color according to rate of divergence
-        float factor = n / iteration;
-        float color = factor * 255;
-        pixel_ptr[num_of_pixel].r = color;
-        pixel_ptr[num_of_pixel].g = 0;
-        pixel_ptr[num_of_pixel].b = 0;
+        pixel_ptr[num_of_pixel].r = (iteration * 9) % 256;
+        pixel_ptr[num_of_pixel].g = (iteration * 5) % 256;
+        pixel_ptr[num_of_pixel].b = (iteration * 13) % 256;
         num_of_pixel++;
       }
-
 
       // update cx
       cx += res; 
