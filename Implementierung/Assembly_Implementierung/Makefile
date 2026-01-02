@@ -16,8 +16,8 @@ main.o: main.c bmp.h burning_ship.h
 bmp.o: bmp.c bmp.h
 	$(CC) $(CFLAGES) -c bmp.c
 
-burning_ship.o: burning_ship.S
-	$(CC) -c burning_ship.S
+burning_ship.o: burning_ship.s
+	$(CC) -c burning_ship.s
  
 clean:
 	rm -f $(OBJS) $(TARGET)

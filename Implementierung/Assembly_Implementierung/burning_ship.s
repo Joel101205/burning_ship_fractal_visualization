@@ -36,7 +36,7 @@ burning_ship:
   push r13
   push r14
 
-  mov r9, rdx // store n in r9
+  mov r9, rdx # store n in r9
 
   // load constant for checking divergence
   movss xmm12, dword ptr[rip + four] 
@@ -45,37 +45,37 @@ burning_ship:
   mov eax, 0x7fffffff
   movd xmm9, eax 
 
-  pshufd xmm2, xmm0, 0x55 // broadcast the imaginary part to xmm2  
-  xor rbx, rbx    // number of pixels
+  pshufd xmm2, xmm0, 0x55 # broadcast the imaginary part to xmm2  
+  xor rbx, rbx    # number of pixels
   
-  movss xmm3, xmm0 // set cx to start
-  movss xmm4, xmm2 // set cy to start
+  movss xmm3, xmm0 # set cx to start
+  movss xmm4, xmm2 # set cy to start
 
-  xor r12, r12 // i 
+  xor r12, r12 # i 
 
 .loop_row:
   cmp r12, rsi
   jge .end
   
-  xor r13, r13 // j
+  xor r13, r13 # j
   
 .loop_pixel:
   cmp r13, rdi
   jge .next_row
   
-  xor r14, r14 // interation
-  pxor xmm5, xmm5 // zx
-  pxor xmm6, xmm6 // zy
+  xor r14, r14 # iteration
+  pxor xmm5, xmm5 # zx
+  pxor xmm6, xmm6 # zy
 
 .iterations:
   // check if less than 4 
   movss xmm7, xmm5
-  mulss xmm7, xmm7 // zx * zx
+  mulss xmm7, xmm7 # zx * zx
 
-  movss xmm8, xmm5
-  mulss xmm8, xmm8 // zy * zy
+  movss xmm8, xmm6
+  mulss xmm8, xmm8 # zy * zy
 
-  addss xmm7, xmm8 // zx + zy
+  addss xmm7, xmm8 # zx + zy
   cmpss xmm7, xmm12, 0x00000001 
   movd eax, xmm7
   test eax, eax
@@ -111,7 +111,7 @@ burning_ship:
   jmp .iterations
 
 .set_colors:
-  cmp r14, r9   // set color black if max iteration reached
+  cmp r14, r9   # set color black if max iteration reached
   jge .set_black
 
   // set blue

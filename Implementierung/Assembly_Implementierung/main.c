@@ -1,9 +1,10 @@
 #include "bmp.h"
 #include "burning_ship.h"
+#include <stdio.h>
 #include <stdlib.h>
 
 
-int main(int argc, char *argv[])
+int main()
 {
   size_t width = 1600;
   size_t height = 1000;
@@ -13,8 +14,11 @@ int main(int argc, char *argv[])
 
   unsigned char *img = malloc(width * height * 3);
 
-  if (img == NULL) return 1;
-
+  if (img == NULL) {
+    printf("Error, could not allocate memory");
+    return 1;
+  }
+  
   burning_ship(start, width, height, res, n, img);
 
   Pixel *pixels = (Pixel *) img;
