@@ -23,7 +23,7 @@ int main()
 
   Pixel *pixels = (Pixel *) img;
 
-  write_pixel(pixels, width, height);
+  write_pixel(pixels, width, height, "burning_ship_fractal.bmp");
 
   return EXIT_SUCCESS;
 }

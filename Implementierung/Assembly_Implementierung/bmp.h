@@ -41,6 +41,6 @@ typedef struct{
 #pragma pack(pop)
 
 // write pixels to a bmp file
-int write_pixel(Pixel *pixel, size_t width, size_t height);
+int write_pixel(Pixel *pixel, size_t width, size_t height, const char *path);
 
 #endif 

@@ -3,9 +3,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int write_pixel(Pixel *pixel, size_t width, size_t height) {
+int write_pixel(Pixel *pixel, size_t width, size_t height, const char *path) {
   FILE *file;
-  file = fopen("burning_ship_fractal.bmp", "wb");
+  file = fopen(path, "wb");
 
   if (file == NULL) {
     printf("Error, could not open file\n");
