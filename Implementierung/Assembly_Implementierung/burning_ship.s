@@ -168,7 +168,3 @@ burning_ship:
   pop rbx 
 
   ret
-
-
-
-
