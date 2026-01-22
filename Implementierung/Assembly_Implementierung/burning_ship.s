@@ -149,7 +149,7 @@ burning_ship:
   mov byte ptr[rcx + rbx + 2], 0
 
 .next_pixel:
-  add rbx, 3
+  add rbx, 4
   inc r13
   addss xmm3, xmm1
 

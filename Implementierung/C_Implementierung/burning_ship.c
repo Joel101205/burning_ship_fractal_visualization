@@ -8,6 +8,7 @@ typedef struct{ // order for writing to BMP
   unsigned char b;
   unsigned char g;
   unsigned char r;
+  unsigned char padding;
 } Pixel;
 
 
@@ -140,7 +141,7 @@ void burning_ship(float complex start, size_t width, size_t height, float res, u
       }
 
       // update cx
-      cx += res; 
+      cx += res;  
     }
     // update cx, cy
     cx = crealf(start);
@@ -156,7 +157,7 @@ int main(int argc, char *argv[])
   float res = 0.0001;
   unsigned n = 1000;
 
-  unsigned char *img = malloc(width * height * 3);
+  unsigned char *img = malloc(width * height * sizeof(Pixel));
 
   if (img == NULL) return 1;
 

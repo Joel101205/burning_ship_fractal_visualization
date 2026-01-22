@@ -31,7 +31,7 @@ int iterations = 1; // Number of times the Algorithm runs
 int benchmark = 0; // 1 = Benchmark testing enabled, 0 = disabled
 unsigned n = 1;
 size_t imgWidth = 1;
-size_t imdHeight = 1;
+size_t imgHeight = 1;
 float real = 1;
 float imag = 0;
 float res = 1;
@@ -64,28 +64,28 @@ while ((opt = getopt_long(argc, argv, "V:B::o:s:r:n:d:h", long_options, NULL)) !
             case 'h':
                 helpMessage();
                 return 0;
-	    case 's':
-		if (sscanf(optarg, "%f, %f", &real, &imag) != 2) {
-		   fprintf(stderr, "Error: Something went wrong when assigning start point!\n");
-	           return 1;
-		}
-		break;
-	    case: 'd':
-		  if (sscanf(optarg, "%zu, %zu", &imgWidth, &imgHeight) != 2) {
-		   fprintf(stderr, "Error: Something went wrong when assigning image size!\n");
-	           return 1;
-		}
-		break;
+	    	case 's':
+				if (sscanf(optarg, "%f, %f", &real, &imag) != 2) {
+		   			fprintf(stderr, "Error: Something went wrong when assigning start point!\n");
+	           		return 1;
+				}
+				break;
+			case 'd':
+				if (sscanf(optarg, "%zu, %zu", &imgWidth, &imgHeight) != 2) {
+					fprintf(stderr, "Error: Something went wrong when assigning image size!\n");
+					return 1;
+				}
+				break;
             case 'n':
-		n = optarg;  
-		break;
-	    case 'r':
-		res = optarg;
-		break;
+				n = optarg;  
+				break;
+			case 'r':
+				res = optarg;
+				break;
             default:
-		fprintf(stderr, "Invalid input, use -h or --help to see input options!\n");
-                return 1;
-        }
+				fprintf(stderr, "Invalid input, use -h or --help to see input options!\n");
+						return 1;
+				}
     }
 
 // Validating user inputs
@@ -116,7 +116,7 @@ if(n < 1) {
 	printf("Warning: There needs to be at least 1 iteration per pixel! Setting n to 1\n");
 }
 
-float complex complexStart = real + imag*I
+float complex complexStart = real + imag*I;
 
 FILE *outputFile = fopen(output, "wb");
 if(!outputFile) {
@@ -125,10 +125,11 @@ if(!outputFile) {
 	
 }
 
+unsigned char *img = malloc(imgWidth * imgHeight * 4);
 
 
 // Writing the output file
-burning_ship(complexStart, imgWidth, imgHeight, res, n, output);
+burning_ship(complexStart, imgWidth, imgHeight, res, n, img);
 
 
 
