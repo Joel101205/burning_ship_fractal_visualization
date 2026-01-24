@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGES = -g -std=c11 -Wall -Wextra
+CFLAGES = -std=c11 -Wall -Wextra
 
 TARGET = burning_ship_fractal
 
@@ -21,3 +21,4 @@ burning_ship.o: burning_ship.s
  
 clean:
 	rm -f $(OBJS) $(TARGET)
+

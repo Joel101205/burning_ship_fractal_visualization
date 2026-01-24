@@ -121,7 +121,7 @@ burning_ship:
   mov r10, 256
   div r10  
   
-  mov byte ptr[rcx + rbx], dl
+  mov byte ptr[rcx + rbx+2], dl
 
   # set green
   mov rax, r14
@@ -139,7 +139,7 @@ burning_ship:
   mov r10, 256
   div r10  
 
-  mov byte ptr[rcx + rbx + 2], dl
+  mov byte ptr[rcx + rbx], dl
 
   jmp .next_pixel
 
