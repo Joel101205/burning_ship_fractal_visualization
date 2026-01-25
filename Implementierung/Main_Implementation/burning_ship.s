@@ -133,7 +133,7 @@ burning_ship:
 
   movaps xmm4, xmm13
   addps xmm4, xmm14
-  cmpps xmm4, xmm7, 1
+  cmpps xmm4, xmm7, 1  # zx² + zy² < 4
   
   # max iteration check
   movaps xmm12, xmm9
