@@ -11,16 +11,17 @@
 void helpMessage() {
 	printf("Help Message\n");
 	printf("This Program generates a burning ship fractal based on user-submitted parameters.\n");
-	printf("Usage: ./BurningShip [-V (int)] [-B (int)] [-o (String)] [-s (float)(float)] [-d (size_t)(size_t)] [-n (int)] [-r (float)] \n");
+	printf("Usage: ./BurningShip [-V (int)] [-B (int)] [-o (String)] [-s (float),(float)] [-d (size_t),(size_t)] [-n (int)] [-r (float)] \n");
         printf("The following options exist:\n");
-	printf(" -V (int)                                : Selects which version of this program to run.  Default: 0, Assembly SISD Implementation: 1, C SISD Implementation: 2\n");
-	printf(" -B(optionalInt)                         : when set, measures benchmark time. Optional number parameter sets number of iterations \n");
-	printf(" -o (String)                             : Sets the name of the output file. Default Name: output.bmp\n");
-	printf(" -s (float),(float)                       : Sets the starting point for the calculation, 1. real part, 2. imaginary part\n"); 
-	printf(" -d (size_t),(size_t)                     : Sets the dimensions for the output image: 1. width, 2. height\n");
-	printf(" -n (int)                                : Sets the number of iterations per pixel\n");
-	printf(" -r (float)                              : Sets the step length per pixel\n");
-	printf(" -h, --help                              : Print this help message.\n");
+	printf(" -V (int)                       : Selects which version of this program to run. Default: 0\n");
+  printf("                                  0: Assembly SIMD Implementation, 1: Assembly SISD Implementation, 2: C SISD Implementation: 2, 3: C compiler optimized\n");
+	printf(" -B(optionalInt)                : when set, measures benchmark time. Optional number parameter sets number of iterations \n");
+	printf(" -o (String)                    : Sets the name of the output file. Default Name: burning_ship.bmp\n");
+	printf(" -s (float),(float)             : Sets the starting point (top left) for the calculation, 1. real part, 2. imaginary part; Default: -1.8,0.01\n"); 
+	printf(" -d (size_t),(size_t)           : Sets the dimensions for the output image: 1. width, 2. height; Default:1920,1080 \n");
+	printf(" -n (int)                       : Sets the number of iterations per pixel; Default: 500\n");
+	printf(" -r (float)                     : Sets the step length per pixel; Default: 0.0001\n");
+	printf(" -h, --help                     : Print this help message.\n");
 }
 
 // extern void burning_ship(float complex start, size_t width, size_t height, float res, unsigned n, unsigned char* img);
@@ -31,13 +32,13 @@ int main(int argc, char* argv[]) {
 int version = 0;  // Determines which implementation is used
 int iterations = 1; // Number of times the Algorithm runs
 int benchmark = 0; // 1 = Benchmark testing enabled, 0 = disabled
-unsigned n = 1;
-size_t imgWidth = 1;
-size_t imgHeight = 1;
-float real = 1;
-float imag = 0;
-float res = 1;
-char *output = "output.bmp";
+unsigned n = 500; // Number of iterations per pixel
+size_t imgWidth = 1920;
+size_t imgHeight = 1080;
+float real = -1.8;
+float imag = 0.01;
+float res = 0.0001;
+char *output = "burning_ship.bmp";
 int opt;
 struct timespec start;
 struct timespec end;
@@ -90,7 +91,7 @@ while ((opt = getopt_long(argc, argv, "V:B::o:s:r:n:d:h", long_options, NULL)) !
 				}
     }
 
-// Validating user inputs
+
 /*
 if(optind < argc) {
 	input = argv[optind];
@@ -99,25 +100,32 @@ if(optind < argc) {
  	return 1;
 }
 */
-// Starting the benchmark timer
-if(benchmark > 0) {
-	clock_gettime(CLOCK_MONOTONIC, &start);
-}
+
+// Validating user inputs
 if(iterations < 1) {
 	iterations = 1;
-	printf("Warning: Number of iterations needs to be >1 ! Value has been set to 1\n");
+	printf("Warning: Number of iterations needs to be > 1 ! Value has been set to 1\n");
 }
 
-if(version < 0) {
+if(version < 0 || version > 3) {
 	version = 0;
 	printf("Warning: Selected version number doesn't exist! Setting to default version\n");
 }
 
 if(n < 1) {
-	n = 1;
-	printf("Warning: There needs to be at least 1 iteration per pixel! Setting n to 1\n");
+	n = 500;
+	printf("Warning: There needs to be at least 1 iteration per pixel! Setting n to 500\n");
 }
 
+if (imgHeight <= 0) {
+	imgHeight = 1920;
+	printf("Warning: The image height needs to be at least 1! Setting height to 1920\n");
+}
+
+if (imgWidth <= 0) {
+	imgWidth = 1080;
+	printf("Warning: The image width needs to be at least 1! Setting width to 1080\n");
+}
 float complex complexStart = real + imag*I;
 
 FILE *outputFile = fopen(output, "wb");
@@ -127,15 +135,27 @@ if(!outputFile) {
 	
 }
 
-unsigned char *img = malloc(imgWidth * imgHeight * 4);
+unsigned char *img = malloc(imgWidth * imgHeight * sizeof(Pixel));
 
 if (img == NULL) {
 	fprintf(stderr, "Error: Unable to allocate memory");
 	return EXIT_FAILURE;
 }
 
-// Call the correct version of the function
-switch (version) {
+
+double total_time = 0.0;
+
+if (benchmark > 0) burning_ship(complexStart, imgWidth, imgHeight, res, n, img); // warmup execution for benchmarking
+
+for (int i = 0; i < iterations; i++) {
+
+	// Starting the benchmark timer
+	if(benchmark > 0) {
+		clock_gettime(CLOCK_MONOTONIC, &start);
+	}
+
+	// Call the correct version of the function
+	switch (version) {
 	case 0: 
 		burning_ship(complexStart, imgWidth, imgHeight, res, n, img);
 		break;
@@ -145,22 +165,29 @@ switch (version) {
 	case 2:
 		burning_ship_V2(complexStart, imgWidth, imgHeight, res, n, img);
 		break;
+	case 3:
+		burning_ship_V3(complexStart, imgWidth, imgHeight, res, n, img);
+		break;
 	default:
 		burning_ship(complexStart, imgWidth, imgHeight, res, n, img);
+	}
+
+	// Benchmark timer end
+	if(benchmark > 0) {
+		clock_gettime(CLOCK_MONOTONIC, &end);
+		total_time += end.tv_sec - start.tv_sec + 1e-9*(end.tv_nsec - start.tv_nsec);
+	}
 }
 
+// Print out average execution time
+if (benchmark > 0) {
+	total_time /= iterations;
+	printf("Average execution time: %lf seconds\n", total_time);
+}
 
+// Write pixels to the output file
 Pixel *pixels = (Pixel *) img;
-
-// Write the pixels to the output file
 write_pixel(pixels, imgWidth, imgHeight, output);
-
-// Benchmark timer end
-if(benchmark > 0) {
-	clock_gettime(CLOCK_MONOTONIC, &end);
-	double time = end.tv_sec - start.tv_sec + 1e-9*(end.tv_nsec - start.tv_nsec);
-	printf("Execution time: %lf seconds\n", time);
-}
 
 printf("Process finished, the result can be found at %s \n", output);
 fclose(outputFile);

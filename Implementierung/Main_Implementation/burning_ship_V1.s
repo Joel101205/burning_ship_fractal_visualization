@@ -76,7 +76,7 @@ burning_ship_V1:
   mulss xmm8, xmm8 
 
   addss xmm7, xmm8  
-  cmpss xmm7, xmm12, 0x00000001  # cmp < 4.0
+  cmpss xmm7, xmm12, 1  # cmp < 4.0
   movd eax, xmm7
   test eax, eax
   jz .set_colors  

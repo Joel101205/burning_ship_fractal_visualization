@@ -31,4 +31,13 @@ void burning_ship_V2(
   unsigned char* img
 );
 
+void burning_ship_V3(
+  float complex start, 
+  size_t width,
+  size_t height,
+  float res,
+  unsigned n, 
+  unsigned char* img
+);
+
 #endif 

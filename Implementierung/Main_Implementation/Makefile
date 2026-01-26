@@ -1,9 +1,10 @@
 CC = gcc
-CFLAGS = -std=c11 -Wall -Wextra
+CFLAGS = -std=c17 
+CFLAGS_OPT = -O3 -ffast-math -march=native
 
 TARGET = burning_ship
 
-OBJS = main.o bmp.o burning_ship.o burning_ship_V1.o burning_ship_V2.o
+OBJS = main.o bmp.o burning_ship.o burning_ship_V1.o burning_ship_V2.o burning_ship_V3.o
 
 all: $(TARGET)
 
@@ -24,7 +25,9 @@ burning_ship_V1.o: burning_ship_V1.s
 
 burning_ship_V2.o: burning_ship_V2.c
 	$(CC) $(CFLAGS) -c burning_ship_V2.c
- 
+
+burning_ship_V3.o: burning_ship_V3.c
+	$(CC) $(CFLAGS) $(CFLAGS_OPT) -c burning_ship_V3.c
 clean:
 	rm -f $(OBJS) $(TARGET)
 
