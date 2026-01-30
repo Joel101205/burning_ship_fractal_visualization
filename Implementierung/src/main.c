@@ -12,10 +12,11 @@ void helpMessage() {
 	printf("Help Message\n");
 	printf("This Program generates a burning ship fractal based on user-submitted parameters.\n");
 	printf("Usage: ./BurningShip [-V (int)] [-B (int)] [-o (String)] [-s (float),(float)] [-d (size_t),(size_t)] [-n (int)] [-r (float)] \n");
-        printf("The following options exist:\n");
+	printf("Default input: ./burning_ship -V 0 -o burning_ship.bmp -s -1.8,0.01 -d 1920,1080 -n 500 -r 0.0001\n");
+    printf("The following options exist:\n");
 	printf(" -V (int)                       : Selects which version of this program to run. Default: 0\n");
-  printf("                                  0: Assembly SIMD Implementation, 1: Assembly SISD Implementation, 2: C SISD Implementation: 2, 3: C compiler optimized\n");
-	printf(" -B(optionalInt)                : when set, measures benchmark time. Optional number parameter sets number of iterations \n");
+  	printf("                                  0: Assembly SIMD Implementation, 1: Assembly SISD Implementation, 2: C SISD Implementation: 2, 3: C compiler optimized\n");
+	printf(" -B(optionalInt)                : when set, measures benchmark time. Optional number parameter sets number of repetitions \n");
 	printf(" -o (String)                    : Sets the name of the output file. Default Name: burning_ship.bmp\n");
 	printf(" -s (float),(float)             : Sets the starting point (top left) for the calculation, 1. real part, 2. imaginary part; Default: -1.8,0.01\n"); 
 	printf(" -d (size_t),(size_t)           : Sets the dimensions for the output image: 1. width, 2. height; Default:1920,1080 \n");
@@ -24,13 +25,10 @@ void helpMessage() {
 	printf(" -h, --help                     : Print this help message.\n");
 }
 
-// extern void burning_ship(float complex start, size_t width, size_t height, float res, unsigned n, unsigned char* img);
-
-
 int main(int argc, char* argv[]) {
 
 int version = 0;  // Determines which implementation is used
-int iterations = 1; // Number of times the Algorithm runs
+int repetitions = 1; // Number of times the Algorithm runs
 int benchmark = 0; // 1 = Benchmark testing enabled, 0 = disabled
 unsigned n = 500; // Number of iterations per pixel
 size_t imgWidth = 1920;
@@ -57,7 +55,7 @@ while ((opt = getopt_long(argc, argv, "V:B::o:s:r:n:d:h", long_options, NULL)) !
                 break;
             case 'B':
                 if (optarg) {
-                    iterations = atoi(optarg);
+                    repetitions = atoi(optarg);
                 }
                 benchmark = 1;
                 break;
@@ -91,40 +89,36 @@ while ((opt = getopt_long(argc, argv, "V:B::o:s:r:n:d:h", long_options, NULL)) !
 				}
     }
 
-
-/*
-if(optind < argc) {
-	input = argv[optind];
-} else {
- 	fprintf(stderr, "Error: Please submit an input file! Use -h or --help for help!\n");
- 	return 1;
-}
-*/
-
 // Validating user inputs
-if(iterations < 1) {
-	iterations = 1;
-	printf("Warning: Number of iterations needs to be > 1 ! Value has been set to 1\n");
+if(repetitions < 1 || repetitions > 100) {
+	repetitions = 1;
+	printf("Warning: repetitions must be in [1, 100]. Reset to 1.\n");
 }
 
 if(version < 0 || version > 3) {
 	version = 0;
-	printf("Warning: Selected version number doesn't exist! Setting to default version\n");
+	printf("Warning: invalid Version. Reset to 0.\n");
 }
 
-if(n < 1) {
+if(n < 1 || n > 5000) {
 	n = 500;
-	printf("Warning: There needs to be at least 1 iteration per pixel! Setting n to 500\n");
+	printf("Warning: iterations per pixel must be in [1, 5000]. Reset to 500\n");
 }
 
-if (imgHeight <= 0) {
-	imgHeight = 1920;
-	printf("Warning: The image height needs to be at least 1! Setting height to 1920\n");
+if (imgHeight < 1 || imgHeight > 8000) {
+	imgHeight = 1080;
+	printf("Warning: height must be in [1, 8000]. Reset to 1080\n");
 }
 
-if (imgWidth <= 0) {
-	imgWidth = 1080;
-	printf("Warning: The image width needs to be at least 1! Setting width to 1080\n");
+if (imgWidth < 1 || imgWidth > 8000) {
+	imgWidth = 1920;
+	printf("Warning: width must be in [1, 8000]. Reset to 1920.\n");
+}
+
+if (imgWidth * imgHeight > 50000000) {
+	imgWidth = 1920;
+	imgHeight = 1080;
+	printf("Warning: total pixel count too large. Reset to 1920x1080.\n");
 }
 float complex complexStart = real + imag*I;
 
@@ -147,7 +141,7 @@ double total_time = 0.0;
 
 if (benchmark > 0) burning_ship(complexStart, imgWidth, imgHeight, res, n, img); // warmup execution for benchmarking
 
-for (int i = 0; i < iterations; i++) {
+for (int i = 0; i < repetitions; i++) {
 
 	// Starting the benchmark timer
 	if(benchmark > 0) {
@@ -181,7 +175,7 @@ for (int i = 0; i < iterations; i++) {
 
 // Print out average execution time
 if (benchmark > 0) {
-	total_time /= iterations;
+	total_time /= repetitions;
 	printf("Average execution time: %lf seconds\n", total_time);
 }
 
