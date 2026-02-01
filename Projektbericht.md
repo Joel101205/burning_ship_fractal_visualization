@@ -148,15 +148,15 @@ Alle Messversuche wurden auf einem Computer mit den folgenden technischen Daten 
 
 Die Zeitmessungen wurden im Rahmenprogramm mit der Funktion clock_gettime() und dem Argument CLOCK_MONOTONIC ausgeführt.
 
-![benchmark-graph.svg](C:\Users\User\Downloads\benchmark-graph.svg)
+![benchmark-graph](https://hackmd.io/_uploads/rJ-avE3LWl.svg)
 
 Der erste Graph zeigt einen Laufzeitvergleich aller Implementierungen auf logarithmischer Skala. Die SIMD-Assembly-Implementierung (orange) erzielt durchgehend die beste Performance.
 
-![bar-comparison.svg](C:\Users\User\Downloads\bar-comparison.svg)
+![bar-comparison](https://hackmd.io/_uploads/rk4RDN3I-e.svg)
 
 Aus dem gruppierten Balkenvergleich der Laufzeiten lässt sich ein konsistentes Verhältnis zwischen den Implementierungen über die verschiedenen Problemstellungen hinweg ablesen.
 
-![relative-performance.svg](C:\Users\User\Downloads\relative-performance.svg)
+![relative-performance](https://hackmd.io/_uploads/H1vy_EhLZg.svg)
 
 Im relativen Laufzeitvergleich dient der unoptimierte C-Code als Referenzgröße. Auffällig ist hierbei, dass die Assembler-Implementierung mit wachsender Problemgröße im Verhältnis schneller wird und die SIMD-Implementierung mit circa 12–15 % am schnellsten ist.
 
