@@ -83,10 +83,10 @@ Zur Analyse wurden vier Implementierungen erstellt:
 
 | Version | Beschreibung                         | Parallelität                    |
 | ------- | ------------------------------------ | ------------------------------- |
-| V0      | SIMD Assembly (Hauptimplementierung) | 4-fach (Pixel), 3-fach (Farben) |
+| V0      | SIMD Assembly (Hauptimplementierung) | 4-fach (Pixel)                  |
 | V1      | SISD Assembly                        | Keine                           |
 | V2      | C ohne Optimierung                   | Keine                           |
-| V3      | C mit -O3                            | Compiler-abhängig               |
+| V3      | C mit -O3 -ffast-math -march=native  | Compiler-abhängig               |
 
 ## 3. Optimierungen
 
