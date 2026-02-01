@@ -5,6 +5,8 @@
 #include <stdio.h>
 #include "bmp.h"
 
+// same code as burning_ship_V2 but compiled with optimization flags
+
 // width, height: number of pixels 
 // res: size of each pixel
 // smaller res => zoom in
