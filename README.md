@@ -3,6 +3,8 @@
 **University Project · TUM · Aspekte der systemnahen Programmierung bei der Spieleentwicklung (ASP)**
 **Winter Semester 2025/26**
 
+**Contributors: Joel Chiu, Arthur Öttl, Leif Nissen**
+
 An optimized implementation of the **Burning Ship fractal** written in x86-64 Assembly, with a C-based command-line interface and multiple implementations for performance comparison.
 
 ## Overview
@@ -23,16 +25,18 @@ The program generates the fractal as a 24-bit BMP image and supports configurabl
 Example:
 
 ```bash
-./burning_ship -V 0 -o burning_ship.bmp \
-    -s -1.8,0.01 -d 1920,1080 -n 500 -r 0.0001
+./burning_ship -V 0 -o burning_ship.bmp -s -1.8,0.01 -d 1920,1080 -n 500 -r 0.0001
 ```
+Output:
+
+<img width="1772" height="1002" alt="image" src="https://github.com/user-attachments/assets/52cd3001-f65c-4834-8f5d-2e1e864c0bc8" />
 
 ## Burning Ship Fractal
 
 The fractal is generated using the iteration
 
 $$
-z_{k+1} = (|\operatorname{Re}(z_k)| + i|\operatorname{Im}(z_k)|)^2 + c
+z_{k+1} = (|Re(z_k)| + i|Im(z_k)|)^2 + c \quad (k \geq 0)
 $$
 
 with $z_0 = 0$.
@@ -102,11 +106,8 @@ Runtime measurements were performed using `clock_gettime()` with `CLOCK_MONOTONI
 
 The SIMD Assembly implementation consistently achieved the shortest runtime among the tested implementations. The performance advantage becomes more noticeable as the image size and computational workload increase.
 
-[Benchmark graph]
+<img width="800" height="550" alt="image" src="https://github.com/user-attachments/assets/a792e2c9-5339-4353-834f-13a86fad41c5" />
 
-[Runtime comparison]
-
-[Relative performance]
 
 Using the unoptimized C implementation as the baseline, the SIMD implementation achieved a relative runtime of approximately **12–15%** of the baseline in the tested configurations.
 
